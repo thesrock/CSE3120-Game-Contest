@@ -14,6 +14,12 @@ question1 BYTE "1: Who created the first assembly programming language?", 13, 10
   "c: Kathleen Booth", 13, 10,
   "d: Yukihiro Matsumoto", 0
 
+question2 BYTE "2: When did assembly first release?", 13, 10,
+  "a: 1951", 13, 10,
+  "b: 1965", 13, 10,
+  "c: 1947", 13, 10,
+  "d: 1949", 0
+
 questions DWORD OFFSET question1
 answers BYTE "c"
 prompt BYTE "Enter a, b, c, or d: ", 0
