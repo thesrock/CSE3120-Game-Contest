@@ -20,8 +20,8 @@ question2 BYTE "2: When did assembly first release?", 13, 10,
   "c: 1947", 13, 10,
   "d: 1949", 0
 
-questions DWORD OFFSET question1
-answers BYTE "c"
+questions DWORD OFFSET question1, OFFSET question2
+answers BYTE "cd"
 prompt BYTE "Enter a, b, c, or d: ", 0
 questionNumber DWORD 0
 
