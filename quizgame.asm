@@ -48,6 +48,16 @@ question:
   call WriteString
 
 ; Check answer, if wrong end gane, if correct move on to next question
-  
+
+;game over procedure
+gameOverMSG BYTE "The Game is OVER! Congradulations, your score is: ",0
+gameIsOver:
+  mov edx, OFFSET gameOverMSG;load the final game message
+  call WriteString; call the final game message
+  mov eax, questionNumber; load the score
+  call WriteDec; call the score
+  call WaitMsg; irvine32 variable that waits so ppl can read the final score
+  exit; exit the game now
+
 main ENDP
 END main
