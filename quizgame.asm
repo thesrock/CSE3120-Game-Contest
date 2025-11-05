@@ -7,6 +7,8 @@ INCLUDE Irvine32.inc
 ; questions and answers
 .data
 startGame BYTE "Ready to start the Assembly Quiz Game?", 0
+gameOverMSG BYTE "The Game is OVER! Congradulations, your score is: ",0
+correct BYTE "That is correct!", 0
 
 question1 BYTE "1: Who created the first assembly programming language?", 13, 10,
   "a: Guido van Rossum", 13, 10,
@@ -24,6 +26,7 @@ questions DWORD OFFSET question1, OFFSET question2
 answers BYTE "cd"
 prompt BYTE "Enter a, b, c, or d: ", 0
 questionNumber DWORD 0
+answered BYTE ?
 
 ; main program
 .code
@@ -31,7 +34,7 @@ main PROC
   mov edx, OFFSET startGame
   call WriteString   ; print out startGame message
   call Crlf
-  call WaitMsg   ; wait for user to start with enter
+  call WaitMsg   ; wait for user to start with any key press
   call Crlf
   call Crlf   ; creates a blank line
 
@@ -43,19 +46,37 @@ question:
   call WriteString
   call Crlf
 
-; Prompt answer
+; Prompt and get answer
   mov edx, OFFSET prompt
   call WriteString
+  call ReadChar ; get input from user, their answer goes into al
+  mov answered, al ; save user answer into answered
+  call Crlf
 
 ; Check answer, if wrong end gane, if correct move on to next question
+  mov eax, OFFSET answers
+  mov ecx, questionNumber
+  mov bl, [eax + ecx]
+  cmp answered, bl
+  jne incorrectAnswer ; if incorrect
+
+  mov edx, OFFSET correct ; correct answer
+  call WriteString ; print that answer was correct
+  call Crlf
+  call Crlf ; blank line for next question
+  inc questionNumber ; increment score
+  jmp question ; next question
+
+incorrectAnswer:
+  jmp gameIsOver
 
 ;game over procedure
-gameOverMSG BYTE "The Game is OVER! Congradulations, your score is: ",0
 gameIsOver:
   mov edx, OFFSET gameOverMSG;load the final game message
   call WriteString; call the final game message
   mov eax, questionNumber; load the score
   call WriteDec; call the score
+  call Crlf
   call WaitMsg; irvine32 variable that waits so ppl can read the final score
   exit; exit the game now
 
