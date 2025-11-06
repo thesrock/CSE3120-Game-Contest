@@ -84,6 +84,8 @@ answers BYTE "cddaabdcdb"
 prompt BYTE "Enter a, b, c, or d: ", 0
 questionNumber DWORD 0
 answered BYTE ?
+qOfPrefix BYTE "Question ", 0
+ofSep     BYTE " of ", 0
 
 ; Code segment: program entry and game flow
 .code
@@ -98,6 +100,17 @@ main PROC
 ; Display question and possible answers
 question:
   mov ecx, questionNumber
+  ; Show progress: "Question X of N"
+  mov edx, OFFSET qOfPrefix
+  call WriteString
+  mov eax, questionNumber
+  inc eax
+  call WriteDec
+  mov edx, OFFSET ofSep
+  call WriteString
+  mov eax, NUM_QUESTIONS
+  call WriteDec
+  call Crlf
   mov eax, OFFSET questions
   mov edx, [eax + ecx*4]
   call WriteString
