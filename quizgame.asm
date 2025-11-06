@@ -9,15 +9,14 @@
 .model flat, stdcall
 .stack 4096
 INCLUDE Irvine32.inc
-
-NUM_QUESTIONS EQU 10
+NUM_QUESTIONS EQU 10            ; total questions in the quiz
 
 ; Data segment: strings, question tables, and game state
 .data
-startGame BYTE "Ready to start the Assembly Quiz Game?", 0
- gameOverMSG BYTE "The Game is OVER! Congratulations, your score is: ",0
-correct BYTE "That is correct!", 0
-incorrect BYTE "That is incorrect.", 0
+startGame BYTE "Ready to start the Assembly Quiz Game?", 0      ; start prompt
+ gameOverMSG BYTE "The Game is OVER! Congratulations, your score is: ",0 ; final score banner
+correct BYTE "That is correct!", 0                              ; feedback on right answer
+incorrect BYTE "That is incorrect.", 0                          ; feedback on wrong answer
 
 question1 BYTE "1: Who created the first assembly programming language?", 13, 10,
   "a: Guido van Rossum", 13, 10,
@@ -79,103 +78,102 @@ question10 BYTE "10: Which rotation instruction can be used for division by 2 of
   "c: ROR", 13, 10,
   "d: ROL", 0
 
-questions DWORD OFFSET question1, OFFSET question2, OFFSET question3, OFFSET question4, OFFSET question5, OFFSET question6, OFFSET question7, OFFSET question8, OFFSET question9, OFFSET question10
-answers BYTE "cddaabdcdb"
-prompt BYTE "Enter a, b, c, or d: ", 0
-questionNumber DWORD 0
-answered BYTE ?
-qOfPrefix BYTE "Question ", 0
-ofSep     BYTE " of ", 0
-allCorrectMsg BYTE "All correct!", 0
-replayPrompt BYTE "Play again? (y/n): ", 0
+questions DWORD OFFSET question1, OFFSET question2, OFFSET question3, OFFSET question4, OFFSET question5, OFFSET question6, OFFSET question7, OFFSET question8, OFFSET question9, OFFSET question10 ; table of question pointers
+answers BYTE "cddaabdcdb"                                       ; correct choices (one per question)
+prompt BYTE "Enter a, b, c, or d: ", 0                          ; input prompt
+questionNumber DWORD 0                                          ; score/current index (0-based)
+answered BYTE ?                                                 ; last input from user
+qOfPrefix BYTE "Question ", 0                                   ; progress prefix
+ofSep     BYTE " of ", 0                                        ; progress separator
+allCorrectMsg BYTE "All correct!", 0                            ; perfect run banner
+replayPrompt BYTE "Play again? (y/n): ", 0                      ; replay prompt
 
 ; Code segment: program entry and game flow
 .code
 main PROC
+  ; startup: print message and wait for key
   mov edx, OFFSET startGame
-  call WriteString   ; print out startGame message
+  call WriteString     ; print start message
   call Crlf
-  call WaitMsg   ; wait for user to start with any key press
+  call WaitMsg         ; wait for any key
   call Crlf
-  call Crlf   ; creates a blank line
+  call Crlf            ; blank line
 
 ; Display question and possible answers
 question:
-  mov ecx, questionNumber
-  ; Show progress: "Question X of N"
+  mov ecx, questionNumber       ; 0-based index
+  ; progress: "Question X of N"
   mov edx, OFFSET qOfPrefix
   call WriteString
   mov eax, questionNumber
-  inc eax
+  inc eax                       ; display as 1-based
   call WriteDec
   mov edx, OFFSET ofSep
   call WriteString
   mov eax, NUM_QUESTIONS
   call WriteDec
   call Crlf
-  mov eax, OFFSET questions
+  mov eax, OFFSET questions      ; load pointer to question text
   mov edx, [eax + ecx*4]
-  call WriteString
+  call WriteString               ; print question + options
   call Crlf
 
 ; Prompt and get answer
-  mov edx, OFFSET prompt
+  mov edx, OFFSET prompt        ; prompt for a/b/c/d
   call WriteString
-  call ReadChar ; get input from user, their answer goes into al
-  mov answered, al ; save user answer into answered
+  call ReadChar                 ; AL = input char
+  mov answered, al              ; save input
   call Crlf
 
 ; Check answer, if wrong end gane, if correct move on to next question
-  mov eax, OFFSET answers
+  mov eax, OFFSET answers       ; BL = correct char for this question
   mov ecx, questionNumber
   mov bl, [eax + ecx]
   cmp answered, bl
-  jne incorrectAnswer ; if incorrect
+  jne incorrectAnswer           ; wrong -> game over
 
-  mov edx, OFFSET correct ; correct answer
-  call WriteString ; print that answer was correct
+  mov edx, OFFSET correct       ; right -> feedback
+  call WriteString
   call Crlf
-  inc questionNumber ; increment score
-  cmp questionNumber, NUM_QUESTIONS ; end when all answers correct
+  inc questionNumber            ; +1 score, move to next
+  cmp questionNumber, NUM_QUESTIONS
   jge gameIsOver
-  call Crlf ; blank line for next question
-  jmp question ; next question
+  call Crlf
+  jmp question
 
 incorrectAnswer:
-  mov edx, OFFSET incorrect ; incorrect answer
-  call WriteString ; print that answer was incorrect
+  mov edx, OFFSET incorrect     ; wrong feedback
+  call WriteString
   call Crlf
   jmp gameIsOver
 
 
 ;game over procedure
 gameIsOver:
-  ; show perfect-score message if all answers correct
-  cmp questionNumber, NUM_QUESTIONS
+  cmp questionNumber, NUM_QUESTIONS ; perfect run?
   jne skipPerfect
   mov edx, OFFSET allCorrectMsg
   call WriteString
   call Crlf
 skipPerfect:
-  mov edx, OFFSET gameOverMSG;load the final game message
-  call WriteString; call the final game message
-  mov eax, questionNumber; load the score
-  call WriteDec; call the score
+  mov edx, OFFSET gameOverMSG   ; final score banner
+  call WriteString
+  mov eax, questionNumber       ; print score
+  call WriteDec
   call Crlf
-  ; ask to replay
-  mov edx, OFFSET replayPrompt
+  mov edx, OFFSET replayPrompt  ; ask to replay
   call WriteString
   call ReadChar
-  cmp al, 'y'
+  cmp al, 'y'                   ; Y/y -> replay
   je doReplay
   cmp al, 'Y'
   je doReplay
   call Crlf
-  exit; exit the game now
+  exit                          ; quit
 
 doReplay:
   call Crlf
-  mov questionNumber, 0
+  mov questionNumber, 0         ; reset score/index
   call Crlf
   jmp question
 
