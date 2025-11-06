@@ -87,6 +87,7 @@ answered BYTE ?
 qOfPrefix BYTE "Question ", 0
 ofSep     BYTE " of ", 0
 allCorrectMsg BYTE "All correct!", 0
+replayPrompt BYTE "Play again? (y/n): ", 0
 
 ; Code segment: program entry and game flow
 .code
@@ -161,8 +162,22 @@ skipPerfect:
   mov eax, questionNumber; load the score
   call WriteDec; call the score
   call Crlf
-  call WaitMsg; irvine32 variable that waits so ppl can read the final score
+  ; ask to replay
+  mov edx, OFFSET replayPrompt
+  call WriteString
+  call ReadChar
+  cmp al, 'y'
+  je doReplay
+  cmp al, 'Y'
+  je doReplay
+  call Crlf
   exit; exit the game now
+
+doReplay:
+  call Crlf
+  mov questionNumber, 0
+  call Crlf
+  jmp question
 
 main ENDP
 END main
