@@ -35,8 +35,26 @@ question4 BYTE "4: What register does pushad save first?", 13, 10,
   "c: ESP", 13, 10,
   "d: EBP", 0
 
-questions DWORD OFFSET question1, OFFSET question2, OFFSET question3, OFFSET question4
-answers BYTE "cdda"
+question5 BYTE "5: In the flags register, what position is the CARRY flag, CF, on?", 13, 10,
+  "a: 0", 13, 10,
+  "b: 1", 13, 10,
+  "c: 6", 13, 10,
+  "d: 7", 0
+
+question6 BYTE "6: The end of a structure declaration is marked with what directive?", 13, 10,
+  "a: END", 13, 10,
+  "b: ENDS", 13, 10,
+  "c: ENDM", 13, 10,
+  "d: EXITM", 0
+
+question7 BYTE "7: What register must you load the address of a string before calling WriteString?", 13, 10,
+  "a: EAX", 13, 10,
+  "b: EBX", 13, 10,
+  "c: ECX", 13, 10,
+  "d: EDX", 0
+
+questions DWORD OFFSET question1, OFFSET question2, OFFSET question3, OFFSET question4, OFFSET question5, OFFSET question6, OFFSET question7
+answers BYTE "cddaabd"
 prompt BYTE "Enter a, b, c, or d: ", 0
 questionNumber DWORD 0
 answered BYTE ?
