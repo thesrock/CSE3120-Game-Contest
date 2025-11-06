@@ -86,6 +86,7 @@ questionNumber DWORD 0
 answered BYTE ?
 qOfPrefix BYTE "Question ", 0
 ofSep     BYTE " of ", 0
+allCorrectMsg BYTE "All correct!", 0
 
 ; Code segment: program entry and game flow
 .code
@@ -148,6 +149,13 @@ incorrectAnswer:
 
 ;game over procedure
 gameIsOver:
+  ; show perfect-score message if all answers correct
+  cmp questionNumber, NUM_QUESTIONS
+  jne skipPerfect
+  mov edx, OFFSET allCorrectMsg
+  call WriteString
+  call Crlf
+skipPerfect:
   mov edx, OFFSET gameOverMSG;load the final game message
   call WriteString; call the final game message
   mov eax, questionNumber; load the score
