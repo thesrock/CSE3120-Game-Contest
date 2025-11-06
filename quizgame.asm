@@ -85,7 +85,6 @@ answered BYTE ?
 
 ; Code segment: program entry and game flow
 .code
-; Entry point
 main PROC
   mov edx, OFFSET startGame
   call WriteString   ; print out startGame message
