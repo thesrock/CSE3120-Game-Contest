@@ -53,8 +53,26 @@ question7 BYTE "7: What register must you load the address of a string before ca
   "c: ECX", 13, 10,
   "d: EDX", 0
 
-questions DWORD OFFSET question1, OFFSET question2, OFFSET question3, OFFSET question4, OFFSET question5, OFFSET question6, OFFSET question7
-answers BYTE "cddaabd"
+question8 BYTE "8: When calling ReadChar, which register does the character get stored in?", 13, 10,
+  "a: AX", 13, 10,
+  "b: AH", 13, 10,
+  "c: AL", 13, 10,
+  "d: CH", 0
+
+question9 BYTE "9: What is the escape character in macros?", 13, 10,
+  "a: %", 13, 10,
+  "b: &", 13, 10,
+  "c: #", 13, 10,
+  "d: !", 0
+
+question10 BYTE "10: Which rotation instruction can be used for division by 2 of large multi-byte integers?", 13, 10,
+  "a: SHL", 13, 10,
+  "b: RCR", 13, 10,
+  "c: ROR", 13, 10,
+  "d: ROL", 0
+
+questions DWORD OFFSET question1, OFFSET question2, OFFSET question3, OFFSET question4, OFFSET question5, OFFSET question6, OFFSET question7, OFFSET question8, OFFSET question9, OFFSET question10
+answers BYTE "cddaabdcdb"
 prompt BYTE "Enter a, b, c, or d: ", 0
 questionNumber DWORD 0
 answered BYTE ?
@@ -94,8 +112,10 @@ question:
   mov edx, OFFSET correct ; correct answer
   call WriteString ; print that answer was correct
   call Crlf
-  call Crlf ; blank line for next question
   inc questionNumber ; increment score
+  cmp questionNumber, 10 ; when getting all answers correct end the game
+  jge gameIsOver
+  call Crlf ; blank line for next question
   jmp question ; next question
 
 incorrectAnswer:
