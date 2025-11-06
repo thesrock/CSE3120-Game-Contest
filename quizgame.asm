@@ -10,6 +10,8 @@
 .stack 4096
 INCLUDE Irvine32.inc
 
+NUM_QUESTIONS EQU 10
+
 ; Data segment: strings, question tables, and game state
 .data
 startGame BYTE "Ready to start the Assembly Quiz Game?", 0
@@ -119,7 +121,7 @@ question:
   call WriteString ; print that answer was correct
   call Crlf
   inc questionNumber ; increment score
-  cmp questionNumber, 10 ; when getting all answers correct end the game
+  cmp questionNumber, NUM_QUESTIONS ; end when all answers correct
   jge gameIsOver
   call Crlf ; blank line for next question
   jmp question ; next question
