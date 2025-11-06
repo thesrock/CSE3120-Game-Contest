@@ -1,10 +1,16 @@
-; Quiz Game
+; Project: Assembly Quiz Game
+; Course: CSE3120
+; Authors: Samuel Rock, Thomas Chamberlain, Lawson Darrow
+; Date: 2025-11-06
+; Assembler: MASM + Irvine32 (x86, 32-bit)
+; Summary: Do-or-die Q&A. Correct -> +1 and continue; wrong -> game over.
+; Build: Assemble/link with Irvine32 on Windows.
 .386
 .model flat, stdcall
 .stack 4096
 INCLUDE Irvine32.inc
 
-; questions and answers
+; Data segment: strings, question tables, and game state
 .data
 startGame BYTE "Ready to start the Assembly Quiz Game?", 0
 gameOverMSG BYTE "The Game is OVER! Congradulations, your score is: ",0
@@ -77,8 +83,9 @@ prompt BYTE "Enter a, b, c, or d: ", 0
 questionNumber DWORD 0
 answered BYTE ?
 
-; main program
+; Code segment: program entry and game flow
 .code
+; Entry point
 main PROC
   mov edx, OFFSET startGame
   call WriteString   ; print out startGame message
@@ -123,6 +130,7 @@ incorrectAnswer:
   call WriteString ; print that answer was incorrect
   call Crlf
   jmp gameIsOver
+
 
 ;game over procedure
 gameIsOver:
