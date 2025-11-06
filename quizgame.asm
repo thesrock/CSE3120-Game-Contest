@@ -15,7 +15,7 @@ NUM_QUESTIONS EQU 10
 ; Data segment: strings, question tables, and game state
 .data
 startGame BYTE "Ready to start the Assembly Quiz Game?", 0
-gameOverMSG BYTE "The Game is OVER! Congradulations, your score is: ",0
+ gameOverMSG BYTE "The Game is OVER! Congratulations, your score is: ",0
 correct BYTE "That is correct!", 0
 incorrect BYTE "That is incorrect.", 0
 
