@@ -9,6 +9,7 @@ INCLUDE Irvine32.inc
 startGame BYTE "Ready to start the Assembly Quiz Game?", 0
 gameOverMSG BYTE "The Game is OVER! Congradulations, your score is: ",0
 correct BYTE "That is correct!", 0
+incorrect BYTE "That is incorrect.", 0
 
 question1 BYTE "1: Who created the first assembly programming language?", 13, 10,
   "a: Guido van Rossum", 13, 10,
@@ -22,8 +23,20 @@ question2 BYTE "2: When did assembly first release?", 13, 10,
   "c: 1947", 13, 10,
   "d: 1949", 0
 
-questions DWORD OFFSET question1, OFFSET question2
-answers BYTE "cd"
+question3 BYTE "3: What does MASM stand for?", 13, 10,
+  "a: Macro System Module", 13, 10,
+  "b: Micro Assembly System", 13, 10,
+  "c: Machine Assembler", 13, 10,
+  "d: Microsoft Macro Assembler", 0
+
+question4 BYTE "4: What register does pushad save first?", 13, 10,
+  "a: EAX", 13, 10,
+  "b: EDI", 13, 10,
+  "c: ESP", 13, 10,
+  "d: EBP", 0
+
+questions DWORD OFFSET question1, OFFSET question2, OFFSET question3, OFFSET question4
+answers BYTE "cdda"
 prompt BYTE "Enter a, b, c, or d: ", 0
 questionNumber DWORD 0
 answered BYTE ?
@@ -68,6 +81,9 @@ question:
   jmp question ; next question
 
 incorrectAnswer:
+  mov edx, OFFSET incorrect ; incorrect answer
+  call WriteString ; print that answer was incorrect
+  call Crlf
   jmp gameIsOver
 
 ;game over procedure
