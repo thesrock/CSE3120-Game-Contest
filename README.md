@@ -4,6 +4,7 @@ CSE3120: Assembly Game Contest 2
 A continuation of Game Contest 1s "Quiz Game"
 
 Members : Samuel Rock, Thomas Chamberlain
+
 With Previous Work Done By: Lawson Darrow
 
 GAME RULES:
