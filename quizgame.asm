@@ -18,61 +18,61 @@ startGame BYTE "Ready to start the Assembly Quiz Game?", 0      ; start prompt
 correct BYTE "That is correct!", 0                              ; feedback on right answer
 incorrect BYTE "That is incorrect.", 0                          ; feedback on wrong answer
 
-question1 BYTE "1: Who created the first assembly programming language?", 13, 10,
+question1 BYTE "Who created the first assembly programming language?", 13, 10,
   "a: Guido van Rossum", 13, 10,
   "b: James Gosling", 13, 10,
   "c: Kathleen Booth", 13, 10,
   "d: Yukihiro Matsumoto", 0
 
-question2 BYTE "2: When did assembly first release?", 13, 10,
+question2 BYTE "When did assembly first release?", 13, 10,
   "a: 1951", 13, 10,
   "b: 1965", 13, 10,
   "c: 1947", 13, 10,
   "d: 1949", 0
 
-question3 BYTE "3: What does MASM stand for?", 13, 10,
+question3 BYTE "What does MASM stand for?", 13, 10,
   "a: Macro System Module", 13, 10,
   "b: Micro Assembly System", 13, 10,
   "c: Machine Assembler", 13, 10,
   "d: Microsoft Macro Assembler", 0
 
-question4 BYTE "4: What register does pushad save first?", 13, 10,
+question4 BYTE "What register does pushad save first?", 13, 10,
   "a: EAX", 13, 10,
   "b: EDI", 13, 10,
   "c: ESP", 13, 10,
   "d: EBP", 0
 
-question5 BYTE "5: In the flags register, what position is the CARRY flag, CF, on?", 13, 10,
+question5 BYTE "In the flags register, what position is the CARRY flag, CF, on?", 13, 10,
   "a: 0", 13, 10,
   "b: 1", 13, 10,
   "c: 6", 13, 10,
   "d: 7", 0
 
-question6 BYTE "6: The end of a structure declaration is marked with what directive?", 13, 10,
+question6 BYTE "The end of a structure declaration is marked with what directive?", 13, 10,
   "a: END", 13, 10,
   "b: ENDS", 13, 10,
   "c: ENDM", 13, 10,
   "d: EXITM", 0
 
-question7 BYTE "7: What register must you load the address of a string before calling WriteString?", 13, 10,
+question7 BYTE "What register must you load the address of a string before calling WriteString?", 13, 10,
   "a: EAX", 13, 10,
   "b: EBX", 13, 10,
   "c: ECX", 13, 10,
   "d: EDX", 0
 
-question8 BYTE "8: When calling ReadChar, which register does the character get stored in?", 13, 10,
+question8 BYTE "When calling ReadChar, which register does the character get stored in?", 13, 10,
   "a: AX", 13, 10,
   "b: AH", 13, 10,
   "c: AL", 13, 10,
   "d: CH", 0
 
-question9 BYTE "9: What is the escape character in macros?", 13, 10,
+question9 BYTE "What is the escape character in macros?", 13, 10,
   "a: %", 13, 10,
   "b: &", 13, 10,
   "c: #", 13, 10,
   "d: !", 0
 
-question10 BYTE "10: Which rotation instruction can be used for division by 2 of large multi-byte integers?", 13, 10,
+question10 BYTE "Which rotation instruction can be used for division by 2 of large multi-byte integers?", 13, 10,
   "a: SHL", 13, 10,
   "b: RCR", 13, 10,
   "c: ROR", 13, 10,
@@ -134,7 +134,8 @@ main PROC
 
 ; Display question and possible answers
 question:
-  mov ecx, questionNumber       ; 0-based index
+  mov eax, questionNumber       ; 0-based index
+  movzx ecx, byte ptr [order + eax]
   ; progress: "Question X of N"
   mov edx, OFFSET qOfPrefix
   call WriteString
@@ -146,8 +147,8 @@ question:
   mov eax, NUM_QUESTIONS
   call WriteDec
   call Crlf
-  mov eax, OFFSET questions      ; load pointer to question text
-  mov edx, [eax + ecx*4]
+  mov esi, OFFSET questions      ; load pointer to question text
+  mov edx, [esi + ecx*4]
   call WriteString               ; print question + options
   call Crlf
 
@@ -159,9 +160,10 @@ question:
   call Crlf
 
 ; Check answer, if wrong end gane, if correct move on to next question
-  mov eax, OFFSET answers       ; BL = correct char for this question
-  mov ecx, questionNumber
-  mov bl, [eax + ecx]
+  mov esi, OFFSET answers       ; BL = correct char for this question
+  mov eax, questionNumber
+  movzx ecx, byte ptr [order + eax]
+  mov bl, [esi + ecx]
   cmp answered, bl
   jne incorrectAnswer           ; wrong -> game over
 
@@ -207,6 +209,7 @@ skipPerfect:
 doReplay:
   call Crlf
   mov questionNumber, 0         ; reset score/index
+  call RandomOrder              ; Rerandomize the order for the replay
   call Crlf
   jmp question
 
