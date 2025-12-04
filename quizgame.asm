@@ -87,9 +87,23 @@ qOfPrefix BYTE "Question ", 0                                   ; progress prefi
 ofSep     BYTE " of ", 0                                        ; progress separator
 allCorrectMsg BYTE "All correct!", 0                            ; perfect run banner
 replayPrompt BYTE "Play again? (y/n): ", 0                      ; replay prompt
+order BYTE NUM_QUESTIONS DUP(?)
 
 ; Code segment: program entry and game flow
 .code
+RandomOrder PROC
+ lea edi, order
+ xor ebx, ebx
+FillOrder:
+ mov al, bl
+ mov [edi + ebx], al
+ inc ebx
+ cmp ebx, NUM_QUESTIONS
+ jl FillOrder
+ mov ecx, NUM_QUESTIONS
+ dec ecx
+RandomOrder ENDP
+
 main PROC
   ; startup: print message and wait for key
   mov edx, OFFSET startGame
