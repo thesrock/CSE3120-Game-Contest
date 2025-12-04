@@ -18,6 +18,9 @@ startGame BYTE "Ready to start the Assembly Quiz Game?", 0      ; start prompt
 correct BYTE "That is correct!", 0                              ; feedback on right answer
 incorrect BYTE "That is incorrect.", 0                          ; feedback on wrong answer
 
+animatedTitle BYTE "QUIZ DELUXE GOLD EDITION", 0
+titleLength    EQU($ - animatedTitle)
+
 ; Colors for feedback
 colorDefault  EQU lightGray + black*16
 colorCorrect  EQU lightGreen + black*16
@@ -126,7 +129,25 @@ FinishShuffle:
 RandomOrder ENDP
 
 main PROC
-  ; startup: print message and wait for key
+ ; ==========================
+ ; Animated Title : QUIZ DELUXE GOLD EDITION
+ ; ==========================
+ mov eax, colorQuestion    ; bright yellow for title
+ call SetTextColor
+
+ mov esi, OFFSET animatedTitle
+ mov ecx, titleLength      ; number of characters in title
+
+ printTitleLoop:
+ mov al, [esi]             ; get current character
+ call WriteChar            ; print it
+ inc esi
+ loop printTitleLoop
+
+ call Crlf
+ mov eax, colorDefault
+ call SetTextColor
+ ; startup: print message and wait for key
  call Randomize
 
   mov edx, OFFSET startGame
