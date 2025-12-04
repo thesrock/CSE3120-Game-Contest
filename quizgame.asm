@@ -100,6 +100,7 @@ order BYTE NUM_QUESTIONS DUP(?)
 
 ; Code segment: program entry and game flow
 .code
+; Algorithm to do random ordering and shuffling of Q/As
 RandomOrder PROC
  lea edi, order
  xor ebx, ebx
@@ -111,6 +112,7 @@ FillOrder:
  jl FillOrder
  mov ecx, NUM_QUESTIONS
  dec ecx
+; Loop
 ShuffleLoop:
  cmp ecx, 0
  jle FinishShuffle
@@ -124,14 +126,13 @@ ShuffleLoop:
  mov [esi + eax], dl
  dec ecx
  jmp ShuffleLoop
+; Return after shuffling is done
 FinishShuffle:
  ret
 RandomOrder ENDP
 
 main PROC
- ; ==========================
- ; Animated Title : QUIZ DELUXE GOLD EDITION
- ; ==========================
+; Title : QUIZ DELUXE GOLD EDITION
  mov eax, colorQuestion    ; bright yellow for title
  call SetTextColor
 
