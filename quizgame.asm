@@ -18,6 +18,12 @@ startGame BYTE "Ready to start the Assembly Quiz Game?", 0      ; start prompt
 correct BYTE "That is correct!", 0                              ; feedback on right answer
 incorrect BYTE "That is incorrect.", 0                          ; feedback on wrong answer
 
+; Colors for feedback
+colorDefault  EQU lightGray + black*16
+colorCorrect  EQU lightGreen + black*16
+colorWrong    EQU lightRed + black*16
+colorQuestion EQU yellow + black*16
+
 question1 BYTE "Who created the first assembly programming language?", 13, 10,
   "a: Guido van Rossum", 13, 10,
   "b: James Gosling", 13, 10,
@@ -151,6 +157,8 @@ question:
   mov edx, [esi + ecx*4]
   call WriteString               ; print question + options
   call Crlf
+  mov eax, colorQuestion
+  call SetTextColor
 
 ; Prompt and get answer
   mov edx, OFFSET prompt        ; prompt for a/b/c/d
@@ -167,9 +175,13 @@ question:
   cmp answered, bl
   jne incorrectAnswer           ; wrong -> game over
 
-  mov edx, OFFSET correct       ; right -> feedback
+  mov eax, colorCorrect
+  call SetTextColor        ; set green for correct
+  mov edx, OFFSET correct
   call WriteString
   call Crlf
+  mov eax, colorDefault
+  call SetTextColor        ; reset to default
   inc questionNumber            ; +1 score, move to next
   cmp questionNumber, NUM_QUESTIONS
   jge gameIsOver
@@ -177,9 +189,13 @@ question:
   jmp question
 
 incorrectAnswer:
-  mov edx, OFFSET incorrect     ; wrong feedback
+  mov eax, colorWrong
+  call SetTextColor        ; set red for wrong
+  mov edx, OFFSET incorrect
   call WriteString
   call Crlf
+  mov eax, colorDefault
+  call SetTextColor        ; reset to default
   jmp gameIsOver
 
 
