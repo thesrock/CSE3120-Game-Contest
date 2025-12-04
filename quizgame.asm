@@ -18,7 +18,7 @@ startGame BYTE "Ready to start the Assembly Quiz Game?", 0      ; start prompt
 correct BYTE "That is correct!", 0                              ; feedback on right answer
 incorrect BYTE "That is incorrect.", 0                          ; feedback on wrong answer
 
-animatedTitle BYTE "QUIZ DELUXE GOLD EDITION", 0
+animatedTitle BYTE "QUIZ GAME DELUXE GOLD EDITION", 0
 titleLength    EQU($ - animatedTitle)
 
 ; Colors for feedback
