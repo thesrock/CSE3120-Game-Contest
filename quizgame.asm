@@ -1,6 +1,6 @@
 ; Project: Assembly Quiz Game
 ; Course: CSE3120
-; Authors: Samuel Rock, Thomas Chamberlain, Lawson Darrow
+; Authors: Samuel Rock, Thomas Chamberlain
 ; Date: 2025-11-06
 ; Assembler: MASM + Irvine32 (x86, 32-bit)
 ; Summary: Do-or-die Q&A. Correct -> +1 and continue; wrong -> game over.
