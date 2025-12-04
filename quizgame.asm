@@ -102,16 +102,35 @@ FillOrder:
  jl FillOrder
  mov ecx, NUM_QUESTIONS
  dec ecx
+ShuffleLoop:
+ cmp ecx, 0
+ jle FinishShuffle
+ mov eax, ecx
+ inc eax
+ call RandomRange
+ lea esi, order
+ mov dl, [esi + ecx]
+ mov bl, [esi + eax]
+ mov [esi + ecx], bl
+ mov [esi + eax], dl
+ dec ecx
+ jmp ShuffleLoop
+FinishShuffle:
+ ret
 RandomOrder ENDP
 
 main PROC
   ; startup: print message and wait for key
+ call Randomize
+
   mov edx, OFFSET startGame
   call WriteString     ; print start message
   call Crlf
   call WaitMsg         ; wait for any key
   call Crlf
   call Crlf            ; blank line
+
+ call RandomOrder
 
 ; Display question and possible answers
 question:
